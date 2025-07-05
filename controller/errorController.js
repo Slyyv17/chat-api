@@ -1,4 +1,4 @@
-const AppError = require("../errors/appError");
+const AppError = require("../errors/AppError");
 
 // responsible for handling all errors
 const sendErrorDev = (error, res) => {

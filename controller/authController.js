@@ -1,6 +1,6 @@
-const user = require("../db/models/user");
+const { user } = require("../db/models");
 const bcrypt = require("bcrypt");
-const AppError = require("../errors/appError");
+const AppError = require("../errors/AppError");
 const catchAsync = require("../errors/catchAsync");
 const generateUserToken = require("../utils/generateUserToken");
 const { Op } = require('sequelize');

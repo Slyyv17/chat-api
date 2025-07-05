@@ -2,8 +2,9 @@ require('dotenv').config();
 const express = require('express');
 const authRoute = require('./routes/authRoute');
 const catchAsync = require('./errors/catchAsync');
-const AppError = require('./errors/appError');
+const AppError = require('./errors/AppError');
 const globalErrorHandler = require('./controller/errorController');
+const userRoute = require('./routes/userRoute');
 
 const app = express();
 
@@ -18,6 +19,7 @@ app.use(express.json());
 
 // all routes
 app.use('/api/v1/auth', authRoute);
+app.use('/api/v1/user', userRoute);
 
 app.use(
     catchAsync(async (req, res, next) => {
