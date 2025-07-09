@@ -2,6 +2,7 @@ const catchAsync = require('../errors/catchAsync');
 const AppError = require('../errors/AppError');
 const cloudinary = require('../utils/cloudinary');
 const db = require('../db/models');
+const { Op } = require('sequelize');
 
 const uploadProfileImg = catchAsync(async (req, res, next) => {
   const userId = req.user.id;
@@ -42,6 +43,26 @@ const uploadProfileImg = catchAsync(async (req, res, next) => {
   });
 });
 
+const getUsers = catchAsync(async (req, res, next) => {
+  const currentUserId = req.user.id;
+  const users = await db.user.findAll({
+    where: {
+      id: { [Op.ne]: currentUserId }, // Exclude the current user
+    },
+    attributes: { exclude: ['password', 'email'] },
+  });
+
+  if (!users || users.length === 0) {
+    return next(new AppError('No users found', 404));
+  }
+
+  res.status(200).json({
+    status: 'success',
+    data: { users }
+  });
+})
+
 module.exports = {
-  uploadProfileImg
+  uploadProfileImg,
+  getUsers,
 };

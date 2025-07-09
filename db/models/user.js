@@ -2,7 +2,7 @@
 'use strict';
 
 module.exports = (sequelize, DataTypes) => {
-  const User = sequelize.define('user', {
+  const user = sequelize.define('user', {
     id: {
       allowNull: false,
       autoIncrement: true,
@@ -41,5 +41,16 @@ module.exports = (sequelize, DataTypes) => {
     timestamps: true           // Enables createdAt/updatedAt automatically
   });
 
-  return User;
+  // 💡 Association setup
+  user.associate = (models) => {
+    user.hasMany(models.friendRequest, {
+      as: 'sentRequests',
+      foreignKey: 'senderId',
+    });
+    user.hasMany(models.friendRequest, {
+      as: 'receivedRequests',
+      foreignKey: 'receiverId',
+    });
+  };
+  return user;
 };
