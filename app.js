@@ -6,8 +6,11 @@ const AppError = require('./errors/AppError');
 const globalErrorHandler = require('./controller/errorController');
 const userRoute = require('./routes/userRoute');
 const requestRouter = require('./routes/requestRoute');
+const { connectToMongo } = require('./config/connect');
 
 const app = express();
+
+connectToMongo();
 
 app.get('/', (req, res) => {
     res.status(200).json({
