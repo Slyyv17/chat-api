@@ -39,28 +39,33 @@ const sendFriendRequest = catchAsync(async (req, res, next) => {
 });
 
 const acceptFriendRequest = catchAsync(async (req, res, next) => {
-    const currentUserId = req.user.id;
-    const { requestId } = req.params;
-  
-    const request = await friendRequest.findByPk(requestId);
-  
-    if (!request || request.receiverId !== currentUserId) {
-      return next(new AppError("Friend request not found or unauthorized", 404));
-    }
-  
-    if (request.status === "accepted") {
-      return next(new AppError("Friend request already accepted", 400));
-    }
-  
-    request.status = "accepted";
-    await request.save();
-  
-    res.status(200).json({
-      status: "success",
-      message: "Friend request accepted",
-      data: request,
-    });
+  const currentUserId = req.user.id;
+  const { requestId } = req.params;
+
+  const request = await friendRequest.findByPk(requestId);
+
+  // 🔍 Log right after fetching
+  // console.log('💡 Current user ID:', currentUserId);
+  // console.log('📦 Friend request:', request);
+
+  if (!request || request.receiverId !== currentUserId) {
+    return next(new AppError("Friend request not found or unauthorized", 404));
+  }
+
+  if (request.status === "accepted") {
+    return next(new AppError("Friend request already accepted", 400));
+  }
+
+  request.status = "accepted";
+  await request.save();
+
+  res.status(200).json({
+    status: "success",
+    message: "Friend request accepted",
+    data: request,
+  });
 });
+
 
 const rejectFriendRequest = catchAsync(async (req, res, next) => {
     const currentUserId = req.user.id;

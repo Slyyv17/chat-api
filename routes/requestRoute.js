@@ -4,8 +4,8 @@ const { sendFriendRequest, acceptFriendRequest, rejectFriendRequest, cancelFrien
 const router = Router();
 
 router.post('/friends/request/:userId', protectUser, sendFriendRequest);
-router.put('/friends/accept/:requestId', protectUser, acceptFriendRequest);
-router.put('/friends/reject/:requestId', protectUser, rejectFriendRequest);
+router.patch('/friends/accept/:requestId', protectUser, acceptFriendRequest);
+router.patch('/friends/reject/:requestId', protectUser, rejectFriendRequest);
 router.delete('/friends/cancel/:requestId', protectUser, cancelFriendRequest);
 router.get('/friends/incoming', protectUser, getIncomingFriendRequests);
 router.get('/friends/sent', protectUser, getSentFriendRequests);
