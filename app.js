@@ -1,6 +1,7 @@
 // 📦 Core imports
 require('dotenv').config();
 const express = require('express');
+const { swaggerUi, swaggerSpec } = require('./swagger');
 const http = require('http');
 const { Server } = require('socket.io');
 
@@ -15,6 +16,10 @@ const globalErrorHandler = require('./controller/errorController');
 const { connectToMongo, getDB } = require('./config/connect');
 
 const app = express();
+
+// 🧩 Swagger setup
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
+
 const server = http.createServer(app);
 
 // 🧠 Set up Socket.IO server

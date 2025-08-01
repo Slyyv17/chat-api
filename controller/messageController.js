@@ -1,6 +1,7 @@
 const { getDB } = require('../config/connect');
 const AppError = require('../errors/AppError');
 const catchAsync = require('../errors/catchAsync');
+const { ObjectId } = require('mongodb');
 
 const sendMessage = catchAsync(async (req, res, next) => {
     const db = getDB();
@@ -31,34 +32,25 @@ const sendMessage = catchAsync(async (req, res, next) => {
 });
 
 const getMessages = catchAsync(async (req, res, next) => {
-    const db = getDB();
-    const currentUserId = String(req.user.id);
-    const receiverId = String(req.params.receiverId);
-  
-    // Mark all messages from receiver to current user as read
-    const updateResult = await db.collection('messages').updateMany(
-      {
-        senderId: receiverId,
-        receiverId: currentUserId,
-        read: false
-      },
-      { $set: { read: true } }
-    );
-    console.log('🔄 Matched:', updateResult.matchedCount);
-    console.log('✅ Modified:', updateResult.modifiedCount);
-  
-    // Fetch messages both ways
-    const messages = await db.collection('messages').find({
+  const db = getDB();
+  const currentUserId = req.user.id;
+  const { receiverId } = req.params;
+
+  const messages = await db.collection('messages')
+    .find({
       $or: [
         { senderId: currentUserId, receiverId },
         { senderId: receiverId, receiverId: currentUserId }
       ]
-    }).sort({ createdAt: 1 }).toArray();
-  
-    res.status(200).json({
-      status: 'success',
-      data: { messages }
-    });
+    })
+    .sort({ createdAt: 1 }) // sort by time
+    .toArray();
+
+  res.status(200).json({
+    status: 'success',
+    count: messages.length,
+    messages,
+  });
 });
 
 
